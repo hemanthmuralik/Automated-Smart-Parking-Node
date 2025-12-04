@@ -1,2 +1,1 @@
-# Automated Smart Parking Node
-... (trimmed for zip example) ...
+
