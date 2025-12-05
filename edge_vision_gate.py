@@ -1,42 +1,56 @@
 import cv2
 import subprocess
 import time
-# For demo purposes, we simulate OCR. In a real build, import 'pytesseract' or 'tflite_runtime'
-# import tflite_runtime.interpreter as tflite
+import sys
+import platform
 
-def alpr_pipeline(image_frame):
+# Determine binary name based on OS (for cross-platform testing)
+BINARY_NAME = "parking_node.exe" if platform.system() == "Windows" else "./parking_node"
+
+def alpr_pipeline():
     """
-    Simulates the Edge AI Pipeline:
-    1. Preprocessing (Grayscale/Thresholding)
-    2. Vehicle Detection (MobileNet SSD)
-    3. Character Segmentation & OCR
+    Simulates the Computer Vision Pipeline:
+    Frame Capture -> GrayScale -> Contour Filtering -> OCR
     """
-    # Placeholder: In real deployment, this runs the TFLite inference
-    print("[Edge AI] Detecting Vehicle...")
-    time.sleep(0.5) # Simulating inference time
+    print("[Vision Node] Initializing Camera Stream...")
+    time.sleep(1) # Warmup
     
-    # Simulating a detected plate for the demo
-    detected_plate = "KL-13-AB-9999" 
+    # Simulate processing a frame
+    detected_plate = "KL-13-AB-9999"
     confidence = 0.98
     
-    print(f"[Edge AI] Plate Detected: {detected_plate} (Conf: {confidence*100}%)")
+    print(f"[Vision Node] Vehicle Detected. Processing...")
+    time.sleep(0.5) # Inference latency
+    print(f"[Vision Node] OCR Result: {detected_plate} (Conf: {confidence*100}%)")
+    
     return detected_plate
 
-def send_to_backend(plate_number):
+def trigger_embedded_controller(plate):
     """
-    Interacts with your optimized C backend via CLI arguments
+    Inter-Process Communication (IPC) Bridge
+    Sends data to the Secure C Backend
     """
-    print(f"[System] Sending data to Embedded C Controller...")
-    # Calls your C program passing the plate as an argument
-    subprocess.run(["./parking_manager", "--park", plate_number])
+    print(f"[IPC] Sending payload to Embedded Controller ({BINARY_NAME})...")
+    
+    try:
+        # Secure subprocess call
+        result = subprocess.run(
+            [BINARY_NAME, "--park", plate], 
+            capture_output=True, 
+            text=True
+        )
+        
+        if result.returncode == 0:
+            print(f"[Controller Response]\n{result.stdout}")
+        else:
+            print(f"[Controller Error] {result.stderr}")
+            
+    except FileNotFoundError:
+        print(f"[Error] Binary '{BINARY_NAME}' not found. Did you compile main.c?")
 
 if __name__ == "__main__":
-    # Simulate camera feed
-    cap = cv2.VideoCapture(0) 
+    print("--- Automated Smart Parking Gate (Edge AI) ---")
     
-    print("--- Edge-AI Smart Parking Gate Initialized ---")
-    
-    # Loop to simulate waiting for a car
-    # In real life, this triggers when a frame difference is detected
-    detected_plate = alpr_pipeline(None)
-    send_to_backend(detected_plate)
+    # In a real loop, this would trigger on motion detection
+    plate_data = alpr_pipeline()
+    trigger_embedded_controller(plate_data)
