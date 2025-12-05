@@ -1,0 +1,4 @@
+opencv-python
+numpy
+tflite-runtime; platform_system=="Linux" 
+# Note: tflite-runtime usually needs manual install on Windows, hence the try-except block
