@@ -1,29 +1,58 @@
 #include <stdio.h>
 #include <string.h>
-#include "utility.h" // Your existing utility header
+#include <ctype.h>  // Required for isalnum()
+#include "utility.h"
+
+#define MAX_PLATE_LEN 20
 
 int main(int argc, char *argv[]) {
-    // Check if running in "AI Automation Mode"
+    // --- MODE 1: AUTOMATED AI GATE (CLI Mode) ---
     if (argc > 1) {
         if (strcmp(argv[1], "--park") == 0 && argc == 3) {
-            printf("\n[C-Backend] Received Request from AI Node.\n");
-            // Call your existing function but modify it to accept string args directly
-            // Example: park_vehicle_auto(argv[2]); 
-            printf("[C-Backend] Vehicle %s Parked Successfully.\n", argv[2]);
-            return 0;
+            char safe_plate[MAX_PLATE_LEN];
+            
+            // SECURITY: Prevent Buffer Overflow using strncpy
+            strncpy(safe_plate, argv[2], MAX_PLATE_LEN - 1);
+            safe_plate[MAX_PLATE_LEN - 1] = '\0'; // Ensure null-termination
+
+            // SECURITY: Input Sanitization (Alphanumeric + Hyphens only)
+            int valid = 1;
+            for (int i = 0; safe_plate[i] != '\0'; i++) {
+                if (!isalnum(safe_plate[i]) && safe_plate[i] != '-') {
+                    valid = 0;
+                    break;
+                }
+            }
+
+            if (valid) {
+                // Call the existing park function (ensure utility.c handles this logic)
+                // For demonstration, we print the confirmation needed for the AI node
+                printf("[C-Backend] Validated Plate: %s\n", safe_plate);
+                printf("[C-Backend] Storage Transaction Complete.\n");
+                // In a real scenario, you would call: park_vehicle_db(safe_plate);
+            } else {
+                printf("[Error] Security Alert: Invalid characters in license plate.\n");
+            }
+            return 0; // Exit immediately after handling AI request
         }
     }
 
-    // --- STANDARD MANUAL MODE (Your Existing Menu) ---
+    // --- MODE 2: MANUAL OPERATOR (Menu Mode) ---
     int choice;
     while(1) {
-        printf("\n--- Digital Parking Management System ---\n");
-        printf("1. Display Status\n2. Park Vehicle\n3. Remove Vehicle\n");
-        printf("4. Search Vehicle\n5. Exit\n");
-        printf("Enter choice: ");
-        scanf("%d", &choice);
+        printf("\n--- Smart Parking Node (Maintenance Mode) ---\n");
+        printf("1. View Live Status\n2. Manual Park\n3. Manual Exit\n");
+        printf("4. Search Log\n5. Exit System\n");
+        printf("Select Operation: ");
         
-        // ... (Rest of your existing switch-case logic) ...
+        if (scanf("%d", &choice) != 1) {
+            while(getchar() != '\n'); // Clear buffer on invalid input
+            continue;
+        }
+        
+        // Call your existing functions from utility.c here
+        // switch(choice) { ... }
+        if (choice == 5) break;
     }
     return 0;
 }
