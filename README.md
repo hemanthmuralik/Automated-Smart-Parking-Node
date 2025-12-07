@@ -1,4 +1,4 @@
-# Smart Parking Node — Improved
+# Smart Parking Node
 
 This is a refactored starter for the **Automated Smart Parking Node** project.
 
