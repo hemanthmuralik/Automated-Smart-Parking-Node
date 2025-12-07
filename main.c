@@ -5,6 +5,18 @@
 
 #define MAX_PLATE_LEN 20
 
+int validate_plate(const char *plate) {
+    for (int i = 0; plate[i] != '\0'; i++) {
+        if (!isalnum(plate[i]) && plate[i] != '-') {
+            return 0; // Invalid
+        }
+    }
+    return 1; // Valid
+}
+
+// ... inside main(), replace the loop with:
+if (validate_plate(safe_plate)) {
+    // Call existing park function...
 int main(int argc, char *argv[]) {
     // --- MODE 1: AUTOMATED AI GATE (CLI Mode) ---
     if (argc > 1) {
