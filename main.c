@@ -19,9 +19,17 @@ if (validate_plate(safe_plate)) {
     // Call existing park function...
 int main(int argc, char *argv[]) {
     // --- MODE 1: AUTOMATED AI GATE (CLI Mode) ---
+    // --- MODE 1: AUTOMATED AI GATE (CLI Mode) ---
     if (argc > 1) {
         if (strcmp(argv[1], "--park") == 0 && argc == 3) {
-            char safe_plate[MAX_PLATE_LEN];
+            // ... (your existing parking logic) ...
+            return 0;
+        } else {
+            // NEW BLOCK: Handle invalid arguments
+            printf("[Error] Invalid Usage.\nUsage: ./app --park <LICENSE-PLATE>\n");
+            return 1; // Exit with error code
+        }
+    }
             
             // SECURITY: Prevent Buffer Overflow using strncpy
             strncpy(safe_plate, argv[2], MAX_PLATE_LEN - 1);
