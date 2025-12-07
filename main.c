@@ -58,21 +58,28 @@ int main(int argc, char *argv[]) {
     }
 
     // --- MODE 2: MANUAL OPERATOR (Menu Mode) ---
-    int choice;
-    while(1) {
-        printf("\n--- Smart Parking Node (Maintenance Mode) ---\n");
-        printf("1. View Live Status\n2. Manual Park\n3. Manual Exit\n");
-        printf("4. Search Log\n5. Exit System\n");
-        printf("Select Operation: ");
-        
-        if (scanf("%d", &choice) != 1) {
-            while(getchar() != '\n'); // Clear buffer on invalid input
-            continue;
+    // Call your existing functions from utility.c here
+        switch(choice) {
+            case 1:
+                // view_status(); // Uncomment when utility.c is ready
+                printf(">> Displaying Live Status... (Feature Pending)\n");
+                break;
+            case 2:
+                // manual_park();
+                printf(">> Manual Park Mode... (Feature Pending)\n");
+                break;
+            case 3:
+                // manual_exit();
+                printf(">> Manual Exit Mode... (Feature Pending)\n");
+                break;
+            case 4:
+                // search_log();
+                printf(">> Search Log Mode... (Feature Pending)\n");
+                break;
+            case 5:
+                printf("Exiting System...\n");
+                return 0;
+            default:
+                printf("[!] Invalid Option. Try again.\n");
         }
-        
-        // Call your existing functions from utility.c here
-        // switch(choice) { ... }
-        if (choice == 5) break;
-    }
-    return 0;
 }
